@@ -1,0 +1,29 @@
+// Boards
+export const BOARDS_LOADING = 'BOARDS_LOADING'
+export const BOARDS_LOADED = 'BOARDS_LOADED'
+
+// Topics
+export const TOPICS_LOADING = 'TOPICS_LOADING'
+export const TOPICS_LOADED = 'TOPICS_LOADED'
+export const TOPIC_CREATED = 'TOPIC_CREATED'
+export const TOPIC_REPLY = 'TOPIC_REPLY'
+
+// Posts
+export const POSTS_LOADING = 'POST_LOADING'
+export const POSTS_LOADED = 'POST_LOADED'
+
+// Load names
+export const BOARD_NAME_LOADING = 'BOARD_NAME_LOADING'
+export const BOARD_NAME_LOADED = 'BOARD_NAME_LOADED'
+
+export const BOARD_TOPIC_NAMES_LOADING = 'BOARD_TOPIC_NAMES_LOADING'
+export const BOARD_TOPIC_NAMES_LOADED = 'BOARD_TOPIC_NAMES_LOADED'
+
+// Accounts
+export const USER_LOADING = 'USER_LOADING'
+export const USER_LOGIN = 'USER_LOGIN'
+export const USER_REGISTER = 'USER_REGISTER'
+export const USER_LOADED = 'USER_LOADED'
+export const USER_LOGOUT = 'USER_LOGOUT'
+
+export const USER_FAILED = 'USER_FAILED'

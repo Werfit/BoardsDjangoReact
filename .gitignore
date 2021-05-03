@@ -1,0 +1,17 @@
+# IDE
+.vscode/
+.idea/
+
+# Django & Python
+__pycache__/
+migrations/
+*.sqlite3
+
+# Node
+node_modules/
+
+# Env
+boards_env/
+
+# Else
+.DS_Store
