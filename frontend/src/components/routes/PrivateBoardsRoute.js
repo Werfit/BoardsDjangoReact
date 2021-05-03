@@ -8,7 +8,10 @@ import Loader from '../common/Loader'
 const PrivateBoardsRoute = ({ component: Component, ...rest }) => {
     const { user, isLoading } = useSelector(state => state.accounts)
 
-    return user ? <PublicBoardsRoute component={Component} {...rest} /> : isLoading ? <Loader /> : <Redirect to="/login/" />
+    return user ? 
+        <PublicBoardsRoute component={Component} {...rest} /> :
+            isLoading || localStorage.getItem('usr_token') ? 
+                <Loader /> : <Redirect to="/login/" />
 }
 
 export default PrivateBoardsRoute

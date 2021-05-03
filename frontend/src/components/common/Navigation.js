@@ -16,7 +16,7 @@ const Navigation = () => {
             <li className="nav-item dropdown">
                 <a className="nav-link dropdown-toggle" id="userMenu" aria-haspopup="true" data-bs-toggle="dropdown" aria-expanded="false" data-toggle="dropdown" role="button" href="#">{ (user && !isLoading) && user.username }</a>
                 <div className="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
-                    <a className="dropdown-item" href="#">My account</a>
+                    <Link className="dropdown-item" to="/settings/profile/">My account</Link>
                     <a className="dropdown-item" href="#">Change password</a>
                     <div className="dropdown-divider"></div>
                     <span className="dropdown-item" onClick={() => dsp(logoutUser())}>Log out</span>

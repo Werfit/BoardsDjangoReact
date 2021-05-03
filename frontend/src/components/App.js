@@ -17,6 +17,7 @@ const CreateTopic = lazy(() => import('./pages/CreateTopic'))
 const ReplyPost = lazy(() => import('./pages/ReplyPost'))
 const Login = lazy(() => import('./pages/accounts/Login'))
 const Signup = lazy(() => import('./pages/accounts/Register'))
+const Profile = lazy(() => import('./pages/accounts/Profile'))
 
 const App = () => {
     const dsp = useDispatch()
@@ -37,6 +38,7 @@ const App = () => {
                     <PublicBoardsRoute exact path='/boards/:board_id/topics/:topic_id/posts/' component={ Posts } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/new/' component={ CreateTopic } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/reply/' component={ ReplyPost }/>
+                    <PrivateBoardsRoute path='/settings/profile/' component={ Profile }/>
                     <Route path='/login/' component={ Login } />
                     <Route path='/register/' component={ Signup } />
                     <Route>
