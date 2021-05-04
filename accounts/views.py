@@ -1,8 +1,14 @@
+from django.contrib.auth.models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import RetrieveAPIView
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework import status
 
 from . import serializers
 
@@ -74,6 +80,54 @@ def change_user_password(request):
     user.save()
 
     token, _ = Token.objects.get_or_create(user=user)
+    return Response('Password successfully changed')
+
+
+@api_view(['POST'])
+def reset_password(request):
+    data = serializers.ResetUserPasswordSerializer(data=request.data)
+    data.is_valid(raise_exception=True)
+
+    user = User.objects.get(email=data.validated_data['email'])
+    uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
+    token = PasswordResetTokenGenerator().make_token(user)
+
+    return Response({
+        'uidb64': uidb64,
+        'token': token
+    })
+
+
+@api_view(['POST'])
+def reset_password_check_token(request, uidb64, token):
+    try:
+        id = smart_str(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(id=id)
+
+        if not PasswordResetTokenGenerator().check_token(user, token):
+            return Response({
+                'error': 'Token is incorrect. Try again'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({}, status=status.HTTP_200_OK)
+    except DjangoUnicodeDecodeError:
+        return Response({
+            'error': 'Token is invalid. Try again'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    except User.DoesNotExist:
+        return Response({
+            'error': 'Token is invalid. Try again'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def reset_password_change(request):
+    user = User.objects.get(id=request.data['id'])
+
+    serializer = serializers.ResetUserPasswordChangeSerializer(user, request.data, partial=True)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+
     return Response('Password successfully changed')
 
 

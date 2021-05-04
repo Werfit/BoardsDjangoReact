@@ -1,4 +1,6 @@
 from django.contrib.auth.models import User
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
@@ -24,22 +26,6 @@ class LoginUserSerializer(serializers.Serializer):
         return UserSerializer(instance).data
 
 
-class ChangeUserPasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-    def validate(self, data):
-        user = self.context['user']
-
-        if not user.check_password(data["old_password"]):
-            raise serializers.ValidationError('Incorrect password')
-
-        if data["old_password"] == data["new_password"]:
-            raise serializers.ValidationError('Passwords must not match')
-
-        return data
-
-
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
@@ -63,3 +49,35 @@ class RetrieveUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email')
+
+
+class ChangeUserPasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        user = self.context['user']
+
+        if not user.check_password(data["old_password"]):
+            raise serializers.ValidationError('Incorrect password')
+
+        if data["old_password"] == data["new_password"]:
+            raise serializers.ValidationError('Passwords must not match')
+
+        return data
+
+
+class ResetUserPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate(self, data):
+        user = User.objects.filter(email=data['email'])
+        if user:
+            return data
+        raise serializers.ValidationError('User with such email does not exist')
+
+
+class ResetUserPasswordChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('password',)
