@@ -44,6 +44,40 @@ def logout_user(request):
     })
 
 
+# Gets & Updates User profile data: first name, last name and email
+@api_view(['GET', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def retrieve_user(request):
+    if request.method == 'GET':
+        user = serializers.RetrieveUserSerializer(request.user)
+        return Response(user.data)
+
+    user = serializers.RetrieveUserSerializer(request.user, data=request.data, partial=True)
+    user.is_valid(raise_exception=True)
+    user.save()
+
+    return Response(user.data)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def change_user_password(request):
+    user = request.user
+    serializer = serializers.ChangeUserPasswordSerializer(
+        data=request.data,
+        context={'user': request.user}
+    )
+
+    serializer.is_valid(raise_exception=True)
+
+    user.set_password(serializer.validated_data['new_password'])
+    user.save()
+
+    token, _ = Token.objects.get_or_create(user=user)
+    return Response('Password successfully changed')
+
+
+# Returns User name and id for authentication checks
 class UserRetrieveAPIView(RetrieveAPIView):
     serializer_class = serializers.UserSerializer
     permission_classes = (IsAuthenticated,)

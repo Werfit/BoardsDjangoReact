@@ -1,5 +1,6 @@
 import axios from 'axios'
 import tokenConfig from 'utils/tokenConfig'
+import { createError } from './alerts'
 
 import {
     TOPICS_LOADING,
@@ -22,10 +23,7 @@ export const loadTopics = board_id => async dispatch => {
             type: TOPICS_LOADED,
             payload: result.data
         })
-    } catch (err) {
-        console.error('ERROR OCCURED')
-        console.log(err.response)
-    }
+    } catch (err) { dispatch(createError(err.response.data)) }
 }
 
 // Get board name for breadcrumb
@@ -39,10 +37,7 @@ export const loadBoardName = board_id => async dispatch => {
             type: BOARD_NAME_LOADED,
             payload: result.data
         })
-    } catch (err) {
-        console.error('ERROR OCCURED')
-        console.log(err.response)
-    }
+    } catch (err) { dispatch(createError(err.response.data)) }
 }
 
 // Create new topic
@@ -57,10 +52,7 @@ export const createTopic = ({ board_id, data, pushHistory }) => async (dispatch,
 
         // Redirect user to topic page
         pushHistory(`/boards/${board_id}/topics/`)
-    } catch (err) {
-        console.error('ERROR OCCURED')
-        console.log(err.response)
-    }
+    } catch (err) { dispatch(createError(err.response.data)) }
 }
 
 export const replyTopic = ({ board_id, topic_id, data, pushHistory }) => async (dispatch, getState) => {
@@ -74,8 +66,5 @@ export const replyTopic = ({ board_id, topic_id, data, pushHistory }) => async (
 
         // Redirect user to post page
         pushHistory(`/boards/${board_id}/topics/${topic_id}/posts/`)
-    } catch (err) {
-        console.error('ERROR OCCURED')
-        console.log(err.response)
-    }
+    } catch (err) { dispatch(createError(err.response.data)) }
 }

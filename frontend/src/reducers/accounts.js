@@ -4,7 +4,9 @@ import {
     USER_REGISTER,
     USER_LOGOUT,
     USER_FAILED,
-    USER_LOADED
+    USER_LOADED,
+    USER_LOADING_FAIELD,
+    PASSWORD_CHANGE_FAILED
 } from 'actions/types'
 
 const initialState = {
@@ -37,6 +39,7 @@ export default (state=initialState, action) => {
                 user: action.payload
             }
         case USER_LOGOUT:
+        case USER_LOADING_FAIELD:
             localStorage.removeItem('usr_token')
             return {
                 ...state,
@@ -52,6 +55,11 @@ export default (state=initialState, action) => {
                 isLoading: false,
                 user: null,
                 token: '',
+                errors: action.payload
+            }
+        case PASSWORD_CHANGE_FAILED:
+            return {
+                ...state,
                 errors: action.payload
             }
         default:

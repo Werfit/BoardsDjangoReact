@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { createError } from './alerts'
 
 import {
     BOARDS_LOADING,
@@ -16,8 +17,5 @@ export const loadBoards = () => async dispatch => {
             type: BOARDS_LOADED,
             payload: result.data
         })
-    } catch (err) {
-        console.error('ERRROR OCCURED')
-        console.log(err.response)
-    }
+    } catch (err) { dispatch(createError(err.response.data)) }
 }

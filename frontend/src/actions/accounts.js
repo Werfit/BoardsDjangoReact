@@ -7,7 +7,8 @@ import {
     USER_REGISTER,
     USER_LOADED,
     USER_LOGOUT,
-    USER_FAILED
+    USER_FAILED,
+    USER_LOADING_FAIELD
 } from './types'
 
 export const loginUser = data => async (dispatch, getState) => {
@@ -54,7 +55,7 @@ export const loadUser = () => async (dispatch, getState) => {
             type: USER_LOADED,
             payload: result.data
         })
-    } catch (err) { /* There is no need to show any errors here */ }
+    } catch (err) { dispatch({ type: USER_LOADING_FAIELD }) }
 }
 
 export const logoutUser = () => async (dispatch, getState) => {

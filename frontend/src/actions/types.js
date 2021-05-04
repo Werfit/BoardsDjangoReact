@@ -25,5 +25,17 @@ export const USER_LOGIN = 'USER_LOGIN'
 export const USER_REGISTER = 'USER_REGISTER'
 export const USER_LOADED = 'USER_LOADED'
 export const USER_LOGOUT = 'USER_LOGOUT'
-
 export const USER_FAILED = 'USER_FAILED'
+export const USER_LOADING_FAIELD = 'USER_LOADING_FAILED'
+export const PASSWORD_CHANGE_FAILED = 'PASSWORD_CHANGE_FAILED'
+
+// Profile
+export const PROFILE_LOADING = 'PROFILE_LOADING'
+export const PROFILE_LOADED = 'PROFILE_LOADED'
+export const PROFILE_PATCHED = 'PROFILE_PATCHED'
+
+// Message System
+export const ERROR_CREATE = 'ERROR_CREATE'
+export const MESSAGE_CREATE = 'MESSAGE_CREATE'
+// Clear messages & errors
+export const ALERTS_CLEAR = 'ALERTS_CLEAR'

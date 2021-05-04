@@ -24,6 +24,21 @@ class LoginUserSerializer(serializers.Serializer):
         return UserSerializer(instance).data
 
 
+class ChangeUserPasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate(self, data):
+        user = self.context['user']
+
+        if not user.check_password(data["old_password"]):
+            raise serializers.ValidationError('Incorrect password')
+
+        if data["old_password"] == data["new_password"]:
+            raise serializers.ValidationError('Passwords must not match')
+
+        return data
+
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -42,3 +57,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return UserSerializer(instance).data
+
+
+class RetrieveUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')

@@ -6,6 +6,7 @@ import { loadUser } from 'actions/accounts'
 
 import PublicBoardsRoute from './routes/PublicBoardsRoute'
 import PrivateBoardsRoute from './routes/PrivateBoardsRoute'
+
 import Loader from './common/Loader'
 
 import styles from 'styles/index.sass'
@@ -18,6 +19,9 @@ const ReplyPost = lazy(() => import('./pages/ReplyPost'))
 const Login = lazy(() => import('./pages/accounts/Login'))
 const Signup = lazy(() => import('./pages/accounts/Register'))
 const Profile = lazy(() => import('./pages/accounts/Profile'))
+const ChangePassword = lazy(() => import('./pages/accounts/ChangePassword'))
+
+const Alerts = lazy(() => import('./common/Alerts'))
 
 const App = () => {
     const dsp = useDispatch()
@@ -39,6 +43,7 @@ const App = () => {
                     <PrivateBoardsRoute path='/boards/:board_id/topics/new/' component={ CreateTopic } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/reply/' component={ ReplyPost }/>
                     <PrivateBoardsRoute path='/settings/profile/' component={ Profile }/>
+                    <PrivateBoardsRoute path='/settings/password/' component={ ChangePassword }/>
                     <Route path='/login/' component={ Login } />
                     <Route path='/register/' component={ Signup } />
                     <Route>
@@ -47,6 +52,7 @@ const App = () => {
                         </div>
                     </Route>
                 </Switch>
+                <Alerts />
             </Router>
         </Suspense>
     )

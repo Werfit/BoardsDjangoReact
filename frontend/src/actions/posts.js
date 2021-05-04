@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { createError } from './alerts'
 
 import {
     POSTS_LOADING,
@@ -16,8 +17,5 @@ export const loadPosts = topic_id => async dispatch => {
             type: POSTS_LOADED,
             payload: result.data
         })
-    } catch (err) {
-        console.error('ERROR OCCURED')
-        console.log(err.response)
-    }
+    } catch (err) { dispatch(createError(err.response.data)) }
 }
