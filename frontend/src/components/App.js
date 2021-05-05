@@ -6,6 +6,7 @@ import { loadUser } from 'actions/accounts'
 
 import PublicBoardsRoute from './routes/PublicBoardsRoute'
 import PrivateBoardsRoute from './routes/PrivateBoardsRoute'
+import NotPrivateBoardsRoute from './routes/NotPrivateBoardsRoute'
 
 import Loader from './common/Loader'
 
@@ -27,9 +28,11 @@ const Alerts = lazy(() => import('./common/Alerts'))
 
 const App = () => {
     const dsp = useDispatch()
+
     useEffect(() => {
         dsp(loadUser())
     }, [])
+
     useLayoutEffect(() => {
         styles.use()
         return () => styles.unuse()
@@ -46,10 +49,10 @@ const App = () => {
                     <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/reply/' component={ ReplyPost }/>
                     <PrivateBoardsRoute path='/settings/profile/' component={ Profile }/>
                     <PrivateBoardsRoute path='/settings/password/' component={ ChangePassword }/>
-                    <Route path='/login/' component={ Login } />
-                    <Route path='/register/' component={ Signup } />
-                    <Route exact path='/password-reset/' component={ ResetPassword } />
-                    <Route path='/password-reset/:uidb64/:token/' component={ ResetPasswordChange } />
+                    <NotPrivateBoardsRoute path='/login/' component={ Login } />
+                    <NotPrivateBoardsRoute path='/register/' component={ Signup } />
+                    <NotPrivateBoardsRoute exact path='/password-reset/' component={ ResetPassword } />
+                    <NotPrivateBoardsRoute path='/password-reset/:uidb64/:token/' component={ ResetPasswordChange } />
                     <Route>
                         <div className="alert alert-danger">
                             <b>Error 404.</b> No page found

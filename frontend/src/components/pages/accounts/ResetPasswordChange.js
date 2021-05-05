@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { checkToken } from 'actions/password-reset'
+import { checkToken, resetPassword } from 'actions/password-reset'
 
 import styles from 'styles/accounts.sass'
 import Loader from '../../common/Loader'
+import Errors from './Errors'
 
 const ResetPasswordChange = ({ match }) => {
+    const [newPassword, setNewPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+
     const { user, isLoading, status } = useSelector(state => state.passwordReset)
     const dsp = useDispatch()
     
@@ -17,17 +21,29 @@ const ResetPasswordChange = ({ match }) => {
         return () => styles.unuse()
     }, [])
 
+    const _resetPassword = e => {
+        e.preventDefault()
+
+        dsp(resetPassword(newPassword))
+    }
+
     const validToken = (
         <>
             <h3 className="card-title">Change password for <b>{ user && user.username }</b></h3>
-            <form>
+            <Errors password1={newPassword} password2={confirmPassword} />
+
+            <form onSubmit={e => _resetPassword(e)}>
                 <div className="mb-3">
                     <label htmlFor="newpassword" className="form-label">New password</label>
-                    <input type="password" id="newpassword" className="form-control"/>
+                    <input type="password" id="newpassword" className="form-control"
+                        value={newPassword} onChange={e => setNewPassword(e.target.value)}
+                    />
                 </div>
                 <div className="mb-3">
                     <label htmlFor="confirmpassword" className="form-label">Confirm password</label>
-                    <input type="password" id="confirmpassword" className="form-control"/>
+                    <input type="password" id="confirmpassword" className="form-control"
+                        value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)}
+                    />
                 </div>
                 <div className="d-grid">
                     <button className="btn btn-primary">Change password</button>

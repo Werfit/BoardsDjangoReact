@@ -1,6 +1,4 @@
 from django.contrib.auth.models import User
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 
@@ -81,3 +79,8 @@ class ResetUserPasswordChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('password',)
+
+    def update(self, instance, validated_data):
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance

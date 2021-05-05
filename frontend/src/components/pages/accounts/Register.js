@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 import { registerUser } from 'actions/accounts'
 
@@ -13,7 +13,6 @@ const Register = () => {
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
 
-    const { user, errors } = useSelector(state => state.accounts)
     const dsp = useDispatch()
 
     const signup = e => {
@@ -30,7 +29,7 @@ const Register = () => {
         return () => { styles.unuse() }
     }, [])
 
-    return !user ? (
+    return (
         <div className="container">
             <h1 className="text-center logo my-4">
                 <Link to="/">Django Boards</Link>
@@ -75,7 +74,7 @@ const Register = () => {
                 </div>
             </div>
         </div>
-    ) : <Redirect to="/" />
+    )
 }
 
 export default Register

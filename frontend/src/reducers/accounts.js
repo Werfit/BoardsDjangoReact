@@ -21,7 +21,8 @@ export default (state=initialState, action) => {
         case USER_LOADING:
             return {
                 ...state,
-                isLoading: true
+                isLoading: true,
+                errors: []
             }
         case USER_LOGIN:
         case USER_REGISTER:
@@ -30,13 +31,15 @@ export default (state=initialState, action) => {
                 ...state,
                 isLoading: false,
                 user: action.payload.user,
-                token: action.payload.token
+                token: action.payload.token,
+                errors: []
             }
         case USER_LOADED:
             return {
                 ...state,
                 isLoading: false,
-                user: action.payload
+                user: action.payload,
+                errors: []
             }
         case USER_LOGOUT:
         case USER_LOADING_FAIELD:

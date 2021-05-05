@@ -14,12 +14,14 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from . import serializers
+from .permissions import NotAuthenticated
 
 # TODO: Create permission only for not authenticated users
 # TODO: Implement the permission for login, register and reset
 
 
 @api_view(['POST'])
+@permission_classes([NotAuthenticated])
 def login_user(request):
     user_serializer = serializers.LoginUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
@@ -33,6 +35,7 @@ def login_user(request):
 
 
 @api_view(['POST'])
+@permission_classes([NotAuthenticated])
 def register_user(request):
     user_serializer = serializers.RegisterUserSerializer(data=request.data)
     user_serializer.is_valid(raise_exception=True)
@@ -90,6 +93,7 @@ def change_user_password(request):
 
 
 @api_view(['POST'])
+@permission_classes([NotAuthenticated])
 def reset_password(request):
     data = serializers.ResetUserPasswordSerializer(data=request.data)
     data.is_valid(raise_exception=True)
@@ -122,6 +126,7 @@ def reset_password(request):
 
 
 @api_view(['GET'])
+@permission_classes([NotAuthenticated])
 def reset_password_check_token(request, uidb64, token):
     try:
         id = smart_str(urlsafe_base64_decode(uidb64))
@@ -146,6 +151,7 @@ def reset_password_check_token(request, uidb64, token):
 
 
 @api_view(['POST'])
+@permission_classes([NotAuthenticated])
 def reset_password_change(request):
     user = User.objects.get(id=request.data['id'])
 

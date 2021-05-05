@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-const Errors = ({ checkPasswords=true, password1='asd', password2='asd' }) => {
+const Errors = ({ checkPasswords=true, password1='', password2='' }) => {
     const { errors } = useSelector(state => state.accounts)
     const passwordsCheck = password1 !== password2 && checkPasswords
 

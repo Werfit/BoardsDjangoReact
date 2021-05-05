@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react'
-import { Link, Redirect } from 'react-router-dom'
-import { useSelector, useDispatch } from 'react-redux'
+import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 import { loginUser } from 'actions/accounts'
 
@@ -12,7 +12,6 @@ const Login = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
 
-    const { user } = useSelector(state => state.accounts)
     const dsp = useDispatch()
 
     const login = e => {
@@ -27,7 +26,7 @@ const Login = () => {
         return () => { styles.unuse() }
     }, [])
 
-    return !user ? (
+    return (
         <div className="container">
             <h1 className="text-center logo my-4">
                 <Link to="/">Django Boards</Link>
@@ -66,7 +65,7 @@ const Login = () => {
                 </div>
             </div>
         </div>
-    ) : <Redirect to="/" />
+    )
 }
 
 export default Login
