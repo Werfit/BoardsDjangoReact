@@ -12,6 +12,8 @@ node_modules/
 
 # Env
 boards_env/
+.env
 
 # Else
 .DS_Store
+*.swp

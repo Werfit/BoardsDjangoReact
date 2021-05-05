@@ -3,8 +3,8 @@
 
 Firstly, clone the repository
 
-<pre>git clone https://github.com/Werfit/Boards</pre>
-Secondly, install all requirments
+<pre>git clone https://github.com/Werfit/BoardsDjangoReact</pre>
+Secondly, install all requirements
 
 <pre>pip install</pre>
   
