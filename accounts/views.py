@@ -1,7 +1,10 @@
 from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import smart_str, force_str, smart_bytes, DjangoUnicodeDecodeError
+from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
@@ -11,6 +14,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from . import serializers
+
+# TODO: Create permission only for not authenticated users
+# TODO: Implement the permission for login, register and reset
 
 
 @api_view(['POST'])
@@ -92,13 +98,30 @@ def reset_password(request):
     uidb64 = urlsafe_base64_encode(smart_bytes(user.id))
     token = PasswordResetTokenGenerator().make_token(user)
 
+    mail_html = render_to_string('accounts/mail_template.html', {
+        'email': data.validated_data['email'],
+        'user': user,
+        'uidb64': uidb64,
+        'token': token,
+        'protocol': 'http',
+        'domain': 'localhost:8000'
+    })
+    plain_message = strip_tags(mail_html)
+
+    send_mail(
+        'Password reset',
+        plain_message,
+        's25112003@gmail.com',
+        (data.validated_data['email'],)
+    )
+
     return Response({
         'uidb64': uidb64,
         'token': token
     })
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def reset_password_check_token(request, uidb64, token):
     try:
         id = smart_str(urlsafe_base64_decode(uidb64))
@@ -109,7 +132,9 @@ def reset_password_check_token(request, uidb64, token):
                 'error': 'Token is incorrect. Try again'
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({}, status=status.HTTP_200_OK)
+        return Response({
+            'user': serializers.UserSerializer(user).data
+        }, status=status.HTTP_200_OK)
     except DjangoUnicodeDecodeError:
         return Response({
             'error': 'Token is invalid. Try again'

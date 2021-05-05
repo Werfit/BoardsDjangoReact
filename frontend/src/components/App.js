@@ -20,6 +20,8 @@ const Login = lazy(() => import('./pages/accounts/Login'))
 const Signup = lazy(() => import('./pages/accounts/Register'))
 const Profile = lazy(() => import('./pages/accounts/Profile'))
 const ChangePassword = lazy(() => import('./pages/accounts/ChangePassword'))
+const ResetPassword = lazy(() => import('./pages/accounts/ResetPassword'))
+const ResetPasswordChange = lazy(() => import('./pages/accounts/ResetPasswordChange'))
 
 const Alerts = lazy(() => import('./common/Alerts'))
 
@@ -46,6 +48,8 @@ const App = () => {
                     <PrivateBoardsRoute path='/settings/password/' component={ ChangePassword }/>
                     <Route path='/login/' component={ Login } />
                     <Route path='/register/' component={ Signup } />
+                    <Route exact path='/password-reset/' component={ ResetPassword } />
+                    <Route path='/password-reset/:uidb64/:token/' component={ ResetPasswordChange } />
                     <Route>
                         <div className="alert alert-danger">
                             <b>Error 404.</b> No page found

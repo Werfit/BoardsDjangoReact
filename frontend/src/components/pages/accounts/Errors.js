@@ -11,6 +11,7 @@ const Errors = ({ checkPasswords=true, password1='asd', password2='asd' }) => {
                 return val
             case 'username':
             case 'password':
+            case 'email':
                 return `${key}: ${val}`
             default:
                 return `[server]: ${val}`

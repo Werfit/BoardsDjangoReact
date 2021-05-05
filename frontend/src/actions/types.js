@@ -39,3 +39,8 @@ export const ERROR_CREATE = 'ERROR_CREATE'
 export const MESSAGE_CREATE = 'MESSAGE_CREATE'
 // Clear messages & errors
 export const ALERTS_CLEAR = 'ALERTS_CLEAR'
+
+// Password Reset
+export const TOKEN_CHECKING = 'TOKEN_CHECKING'
+export const TOKEN_CHECKED = 'TOKEN_CHECKED'
+export const TOKEN_FAILED = 'TOKEN_FAILED'

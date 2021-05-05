@@ -6,6 +6,7 @@ import PostsReducer from './posts'
 import AccountsReducer from './accounts'
 import ProfileReducer from './profile'
 import AlertsReducer from './alerts'
+import PasswordResetReducer from './password-reset'
 
 export default combineReducers({
     boards: BoardsReducer,
@@ -13,5 +14,6 @@ export default combineReducers({
     posts: PostsReducer,
     accounts: AccountsReducer,
     profile: ProfileReducer,
-    alerts: AlertsReducer
+    alerts: AlertsReducer,
+    passwordReset: PasswordResetReducer
 })
