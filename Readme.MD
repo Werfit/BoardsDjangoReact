@@ -6,7 +6,8 @@ Firstly, clone the repository
 <pre>git clone https://github.com/Werfit/BoardsDjangoReact</pre>
 Secondly, install all requirements
 
-<pre>pip install</pre>
+<pre>pip install -r requirements.txt</pre>
+<pre>npm install</pre>
   
 ## Set up
 
