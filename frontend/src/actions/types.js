@@ -5,8 +5,7 @@ export const BOARDS_LOADED = 'BOARDS_LOADED'
 // Topics
 export const TOPICS_LOADING = 'TOPICS_LOADING'
 export const TOPICS_LOADED = 'TOPICS_LOADED'
-export const TOPIC_CREATED = 'TOPIC_CREATED'
-export const TOPIC_REPLY = 'TOPIC_REPLY'
+export const TOPICS_CLEAR = 'TOPICS_CLEAR'
 
 // Posts
 export const POSTS_LOADING = 'POST_LOADING'

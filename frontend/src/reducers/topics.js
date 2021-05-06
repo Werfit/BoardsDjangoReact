@@ -3,13 +3,17 @@ import {
     TOPICS_LOADED,
     BOARD_NAME_LOADING,
     BOARD_NAME_LOADED,
-    TOPIC_CREATED
+    TOPICS_CLEAR
 } from 'actions/types'
 
 const initialState = {
     list: [],
     board: null,
     isLoading: false,
+    pages: 0,
+    hasPrev: null,
+    hasNext: null,
+    currentPage: null
 }
 
 export default (state=initialState, action) => {
@@ -24,8 +28,12 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                list: action.payload.topics,
+                list: [...state.list, ...action.payload.results],
+                currentPage: action.payload.current_page,
+                hasNext: action.payload.has_next,
+                hasPrev: action.payload.has_previous,
                 board: action.payload.board,
+                pages: action.payload.pages
             }
         case BOARD_NAME_LOADED:
             return {
@@ -33,10 +41,16 @@ export default (state=initialState, action) => {
                 board: action.payload.name,
                 isLoading: false,
             }
-        case TOPIC_CREATED:
+        case TOPICS_CLEAR:
             return {
                 ...state,
-                list: [action.payload, ...state.list],
+                list: [],
+                board: null,
+                isLoading: false,
+                pages: 0,
+                hasPrev: null,
+                hasNext: null,
+                currentPage: null
             }
         default:
             return state

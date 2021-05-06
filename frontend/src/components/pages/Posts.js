@@ -1,16 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
 import { loadPosts } from 'actions/posts'
+
 import PostItem from '../boards/PostItem'
+import Pagination from '../common/Pagination'
+import Loader from '../common/Loader'
 
 
 const Posts = ({ match }) => {
-    const { list: posts, board, topic, isLoading } = useSelector(state => state.posts)
+    const { list: posts, board, topic, isLoading, hasNext, hasPrev, pages } = useSelector(state => state.posts)
     const dsp = useDispatch()
 
-    useEffect(() => dsp(loadPosts(match.params.topic_id)), [])
+    useEffect(() => dsp(loadPosts({ topic_id: match.params.topic_id })), [])
+    const changePage = page => dsp(loadPosts({
+        topic_id: match.params.topic_id,
+        page
+    }))
 
     return (
         <div className="container">
@@ -29,8 +36,17 @@ const Posts = ({ match }) => {
                 }>Reply</Link>
             </div>
             {
-                posts.map((post, index) => <PostItem key={ post.id } post={ post } isFirst={ index == 0 } topic={ topic } />)
+                isLoading ? 
+                    <Loader /> :
+                        posts.map((post, index) => <PostItem key={ post.id } post={ post } isFirst={ index == 0 } topic={ topic } />)
             }
+            {
+                posts.length === 0 && <div className="alert alert-info">No posts here yet</div>
+            }
+
+            <Pagination {...{
+                pages, hasNext, hasPrev, cb: changePage
+            }}/>
         </div>
     )
 }

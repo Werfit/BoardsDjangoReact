@@ -7,11 +7,12 @@ import {
 } from './types'
 
 
-export const loadPosts = topic_id => async dispatch => {
+export const loadPosts = ({topic_id, page=1}) => async dispatch => {
     dispatch({ type: POSTS_LOADING })
 
     try {
-        const result = await axios.get(`/api/v1/boards/${topic_id}/posts/`)
+        const result = await axios.get(`/api/v1/boards/${topic_id}/posts/?page=${page}`)
+        console.log(topic_id)
 
         dispatch({
             type: POSTS_LOADED,

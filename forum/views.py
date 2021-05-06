@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.utils import timezone
+from collections import OrderedDict
 
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -7,6 +8,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Board, Topic, Post
 from .serializers import BoardSerializer, TopicSerializer, PostSerializer
+from .pagination import LargeResultsSetPagination, SmallResultsSetPagination
 
 
 class BoardsViewSet(viewsets.ModelViewSet):
@@ -19,18 +21,21 @@ class TopicsViewSet(viewsets.ModelViewSet):
     queryset = Topic.objects.all()
     serializer_class = TopicSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = LargeResultsSetPagination
 
     def get_queryset(self):
         return Topic.objects.filter(board=self.kwargs.get('board_pk')).order_by('-updated_at')
 
+    def get_paginated_response(self, data, extra):
+        return self.paginator.get_paginated_response(data, extra)
+
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         board = Board.objects.get(pk=kwargs.get('board_pk'))
 
-        return Response({
-            'topics': self.serializer_class(queryset, many=True).data,
-            'board': board.name
-        })
+        page = self.paginate_queryset(queryset)
+        extra = (('board', board.name),)
+        return self.get_paginated_response(self.get_serializer(page, many=True).data, extra)
 
     def create(self, request, *args, **kwargs):
         data = request.data | {
@@ -49,19 +54,24 @@ class PostsViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = (IsAuthenticatedOrReadOnly,)
+    pagination_class = SmallResultsSetPagination
 
     def get_queryset(self):
         return Post.objects.filter(topic=self.kwargs.get('topic_pk'))
 
+    def get_paginated_response(self, data, extra):
+        return self.paginator.get_paginated_response(data, extra)
+
     def list(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         topic = Topic.objects.get(pk=kwargs.get('topic_pk'))
 
-        return Response({
-            'posts': self.serializer_class(queryset, many=True).data,
-            'topic': topic.subject,
-            'board': topic.board.name
-        })
+        page = self.paginate_queryset(queryset)
+        extra = (
+            ('topic', topic.subject),
+            ('board', topic.board.name)
+        )
+        return self.get_paginated_response(self.get_serializer(page, many=True).data, extra)
 
     def create(self, request, *args, **kwargs):
         data = request.data | {

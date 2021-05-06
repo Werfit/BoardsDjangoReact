@@ -10,7 +10,9 @@ const initialState = {
     board: null,
     topic: null,
     isLoading: false,
-    postSuccessfullyCreated: false
+    pages: 0,
+    hasNext: null,
+    hasPrev: null
 }
 
 export default (state=initialState, action) => {
@@ -25,9 +27,12 @@ export default (state=initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                list: action.payload.posts,
+                list: action.payload.results,
+                hasNext: action.payload.has_next,
+                hasPrev: action.payload.has_previous,
                 board: action.payload.board,
-                topic: action.payload.topic
+                topic: action.payload.topic,
+                pages: action.payload.pages
             }
         case BOARD_TOPIC_NAMES_LOADED:
             return {
