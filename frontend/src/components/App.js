@@ -23,6 +23,7 @@ const Profile = lazy(() => import('./pages/accounts/Profile'))
 const ChangePassword = lazy(() => import('./pages/accounts/ChangePassword'))
 const ResetPassword = lazy(() => import('./pages/accounts/ResetPassword'))
 const ResetPasswordChange = lazy(() => import('./pages/accounts/ResetPasswordChange'))
+const EditPost = lazy(() => import('./pages/EditPost.js'))
 
 const Alerts = lazy(() => import('./common/Alerts'))
 
@@ -47,6 +48,7 @@ const App = () => {
                     <PublicBoardsRoute exact path='/boards/:board_id/topics/:topic_id/posts/' component={ Posts } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/new/' component={ CreateTopic } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/reply/' component={ ReplyPost }/>
+                    <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/:post_id/edit/' component={ EditPost }/>
                     <PrivateBoardsRoute path='/settings/profile/' component={ Profile }/>
                     <PrivateBoardsRoute path='/settings/password/' component={ ChangePassword }/>
                     <NotPrivateBoardsRoute path='/login/' component={ Login } />

@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux'
 import moment from 'moment'
 
 import UserImage from 'assets/img/user.png'
+import { Link } from 'react-router-dom'
 
-const PostItem = ({ post, topic, isFirst }) => {
+const PostItem = ({ params, post, topic, isFirst }) => {
     const { user } = useSelector(state => state.accounts)
     return (
         <div className={ `card ${ isFirst ? `mb-4 border-dark` : `mb-2` } border-dark` }>
@@ -27,11 +28,12 @@ const PostItem = ({ post, topic, isFirst }) => {
                             </div>
                         </div>
                         { post.message }
-                        {/* Check if logged in user is creator of the post */}
                         {
                             (user && user.username === post.created_by.username) && (
                                 <div className="mt-3">
-                                    <a className="btn btn-primary btn-sm" href="{% url 'edit_post' post.topic.board.pk post.topic.pk post.pk %}" role="button">Edit</a>
+                                    <Link className="btn btn-primary btn-sm" role="button"
+                                        to={`/boards/${params.board_id}/topics/${params.topic_id}/posts/${post.id}/edit/`}
+                                    >Edit</Link>
                                 </div>
                             )
                         }

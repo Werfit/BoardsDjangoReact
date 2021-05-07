@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Link } from 'react-router-dom'
 
@@ -38,7 +38,7 @@ const Posts = ({ match }) => {
             {
                 isLoading ? 
                     <Loader /> :
-                        posts.map((post, index) => <PostItem key={ post.id } post={ post } isFirst={ index == 0 } topic={ topic } />)
+                        posts.map((post, index) => <PostItem key={ post.id } post={ post } isFirst={ index == 0 } topic={ topic } params={match.params} />)
             }
             {
                 posts.length === 0 && <div className="alert alert-info">No posts here yet</div>

@@ -1,10 +1,9 @@
-from django.contrib.auth.models import User
 from django.utils import timezone
-from collections import OrderedDict
 
 from rest_framework import viewsets
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, exceptions
+from rest_framework.decorators import action
 
 from .models import Board, Topic, Post
 from .serializers import BoardSerializer, TopicSerializer, PostSerializer
@@ -43,7 +42,7 @@ class TopicsViewSet(viewsets.ModelViewSet):
             'starter': request.user.pk
         }
 
-        topic = self.serializer_class(data=data, context={'message': request.data['message']})
+        topic = self.get_serializer(data=data)
         topic.is_valid(raise_exception=True)
         topic.save()
 
@@ -79,7 +78,7 @@ class PostsViewSet(viewsets.ModelViewSet):
             'created_by': request.user.pk
         }
 
-        post = self.serializer_class(data=data)
+        post = self.get_serializer(data=data)
         post.is_valid(raise_exception=True)
         post.save()
 
@@ -88,3 +87,22 @@ class PostsViewSet(viewsets.ModelViewSet):
         topic.save()
 
         return Response(post.data)
+
+    def retrieve(self, request, pk=None, *args, **kwargs):
+        post = Post.objects.get(pk=pk)
+        if post.created_by != request.user:
+            raise exceptions.PermissionDenied('Not an author of the post')
+
+        return Response({
+            'post': post.message,
+            'topic': post.topic.subject,
+            'board': post.topic.board.name
+        })
+
+    def update(self, request, *args, **kwargs):
+        post = Post.objects.get(pk=kwargs['pk'])
+        if post.created_by != request.user:
+            raise exceptions.PermissionDenied('Not an author of the post')
+
+        kwargs['partial'] = True
+        return super().update(request, *args, **kwargs)

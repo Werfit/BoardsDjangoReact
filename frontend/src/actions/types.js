@@ -8,8 +8,10 @@ export const TOPICS_LOADED = 'TOPICS_LOADED'
 export const TOPICS_CLEAR = 'TOPICS_CLEAR'
 
 // Posts
-export const POSTS_LOADING = 'POST_LOADING'
-export const POSTS_LOADED = 'POST_LOADED'
+export const POSTS_LOADING = 'POSTS_LOADING'
+export const POSTS_LOADED = 'POSTS_LOADED'
+export const POST_LOADING = 'POST_LOADING'
+export const POST_LOADED = 'POST_LOADED'
 
 // Load names
 export const BOARD_NAME_LOADING = 'BOARD_NAME_LOADING'

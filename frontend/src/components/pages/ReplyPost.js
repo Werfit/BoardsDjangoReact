@@ -64,7 +64,7 @@ const ReplyPost = ({ match }) => {
             </form>
 
             {
-                posts.map((post, index) => <Post key={post.id} post={post} topic={topic} isFirst={index===0}/>)
+                posts.map((post, index) => <Post key={post.id} post={post} topic={topic} isFirst={index===0} params={match.params}/>)
             }
 
             <Pagination {...{
