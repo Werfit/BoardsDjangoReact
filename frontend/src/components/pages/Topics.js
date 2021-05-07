@@ -1,17 +1,39 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { loadTopics } from 'actions/topics'
+import { loadTopics, clearTopics } from 'actions/topics'
 
 import TopicItem from '../boards/TopicItem'
 import Loader from '../common/Loader'
 
 const Topics = ({ match }) => {
-    const { list: topics, board, isLoading } = useSelector(state => state.topics)
+    const { 
+        list: topics, board, isLoading, hasNext, currentPage
+    } = useSelector(state => state.topics)
     const dsp = useDispatch()
 
-    useEffect(() => dsp(loadTopics(match.params.board_id)), [])
+    useEffect(() => {
+        dsp(loadTopics({board_id: match.params.board_id}))
+        return () => dsp(clearTopics())
+    }, [])
+
+    const loadNext = () => dsp(loadTopics({
+        board_id: match.params.board_id,
+        page: currentPage + 1
+    }))
+
+    const observer = useRef()
+    const lastElementRef = useCallback(node => {
+        if (isLoading) return
+        if (observer.current) observer.current.disconnect()
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasNext)
+                loadNext()
+        })
+        if (node) observer.current.observe(node)
+    }, [isLoading])
 
     return (
         <div className="container">
@@ -36,7 +58,14 @@ const Topics = ({ match }) => {
                 </thead>
                 <tbody className="infinite-container">
                     {
-                        isLoading ? <Loader isTable={ true } /> : topics.map(topic => <TopicItem key={ topic.id } topic={ topic } board_id={ match.params.board_id } />)
+                        topics.map((topic, index) => {
+                            if (topics.length === index + 1)
+                                return <TopicItem key={topic.id} parentRef={lastElementRef} topic={topic} board_id={match.params.board_id} />
+                            return <TopicItem key={topic.id} topic={topic} board_id={match.params.board_id} />
+                        })
+                    }
+                    {
+                        isLoading && <Loader isTable={true}/>
                     }
                 </tbody>
             </table>

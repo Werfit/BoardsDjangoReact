@@ -51,7 +51,7 @@ class TopicSerializer(serializers.ModelSerializer):
         )
 
         Post.objects.create(
-            message=self.context['message'],
+            message=self.context['request'].data['message'],
             created_by=validated_data['starter'],
             topic=topic
         )

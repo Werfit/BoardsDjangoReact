@@ -6,13 +6,14 @@ import { loadPosts } from 'actions/posts'
 import { replyTopic } from 'actions/topics'
 
 import Post from '../boards/PostItem'
+import Pagination from '../common/Pagination'
 
 const ReplyPost = ({ match }) => {
-    const { isLoading, board, topic, list: posts } = useSelector(state => state.posts)
+    const { isLoading, board, topic, pages, hasPrev, hasNext, list: posts } = useSelector(state => state.posts)
     const dsp = useDispatch()
     const history = useHistory()
 
-    useEffect(() => dsp(loadPosts(match.params.topic_id)), [])
+    useEffect(() => dsp(loadPosts({topic_id: match.params.topic_id})), [])
 
     const [message, setMessage] = useState('')
 
@@ -26,6 +27,12 @@ const ReplyPost = ({ match }) => {
             pushHistory: history.push
         }))
     }
+
+    const loadNewPage = page => dsp(loadPosts({
+        topic_id: match.params.topic_id,
+        pagesOnly: true,
+        page
+    }))
 
     return (
         <div className="container">
@@ -57,8 +64,12 @@ const ReplyPost = ({ match }) => {
             </form>
 
             {
-                posts.map((post, index) => <Post key={post.id} post={post} isFirst={index===0}/>)
+                posts.map((post, index) => <Post key={post.id} post={post} topic={topic} isFirst={index===0} params={match.params}/>)
             }
+
+            <Pagination {...{
+                pages, hasPrev, hasNext, cb: loadNewPage
+            }}/>
         </div>
     )
 }
