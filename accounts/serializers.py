@@ -71,10 +71,36 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         return UserSerializer(instance).data
 
 
+class BloggerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Blogger
+        fields = ('birthday', 'country', 'categories')
+
+
+class ReaderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Reader
+        fields = ('is_adult', 'interests')
+
+
+# Gets user profile
 class RetrieveUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email')
+        fields = ('username', 'first_name', 'last_name', 'email', 'is_blogger', 'is_reader')
+
+    def to_representation(self, instance):
+        _instance = super().to_representation(instance)
+
+        extra_data = {}
+
+        if instance.is_blogger:
+            extra_data.update(BloggerSerializer(instance.blogger).data)
+        if instance.is_reader:
+            extra_data.update(ReaderSerializer(instance.reader).data)
+
+        _instance.update(extra_data)
+        return _instance
 
 
 class ChangeUserPasswordSerializer(serializers.Serializer):
