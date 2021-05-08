@@ -12,6 +12,7 @@ const PrivateBoardsRoute = ({ component: Component, bloggerOnly=false, readerOnl
         user && user.is_blogger : readerOnly ?
             user && user.is_reader : user
 
+
     if (!bloggerOnly && !readerOnly)
         return user ? 
             <PublicBoardsRoute component={Component} {...rest} /> :
@@ -20,7 +21,8 @@ const PrivateBoardsRoute = ({ component: Component, bloggerOnly=false, readerOnl
 
     return condition ?
         <PublicBoardsRoute component={Component} {...rest} /> :
-            isLoading ? <Loader /> : <Redirect to="/" />
+        isLoading || localStorage.getItem('usr_token') && !user ? 
+            <Loader /> : <Redirect to="/login/" />
 }
 
 export default PrivateBoardsRoute

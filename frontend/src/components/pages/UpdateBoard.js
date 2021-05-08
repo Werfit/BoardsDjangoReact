@@ -1,26 +1,43 @@
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Link, useHistory } from 'react-router-dom'
 
-import { createBoard } from 'actions/boards'
+import { loadBoard, updateBoard, clearBoard } from 'actions/boards'
 
-const CreateBoard = () => {
+import Loader from '../common/Loader'
+
+const UpdateBoard = ({ match }) => {
     const dsp = useDispatch()
     const history = useHistory()
+    const { board, isLoading } = useSelector(state => state.boards)
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
 
+    useEffect(() => {
+        dsp(loadBoard(match.params.board_id))
+
+        return () => dsp(clearBoard())
+    }, [])
+
+    useEffect(() => {
+        if (board) {
+            setName(board.name)
+            setDescription(board.description)
+        }
+    }, [board])
+
     const newBoard = e => {
         e.preventDefault()
 
-        dsp(createBoard({
+        dsp(updateBoard({
+            board_id: match.params.board_id,
             data: { name, description },
             pushHistory: history.push
         }))
     }
 
-    return (
+    return isLoading ? <Loader /> : (
         <div className="container">
             <ol className="breadcrumb my-4">
                 <li className="breadcrumb-item">
@@ -50,4 +67,4 @@ const CreateBoard = () => {
     )
 }
 
-export default CreateBoard
+export default UpdateBoard
