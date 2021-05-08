@@ -1,12 +1,12 @@
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from rest_framework import serializers
+from .models import User, Reader, Blogger
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username')
+        fields = ('id', 'username', 'is_reader', 'is_blogger')
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -27,7 +27,7 @@ class LoginUserSerializer(serializers.Serializer):
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password')
+        fields = ('id', 'username', 'password', 'email')
 
         extra_kwargs = {
             'password': {
@@ -36,7 +36,35 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        user = User.objects.create_user(validated_data['username'], '', validated_data['password'])
+        role = self.context.data.get('role')
+
+        if role != 'reader' and role != 'blogger':
+            raise serializers.ValidationError({'detail': 'Unknown role'})
+
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data.get('email', ''),
+            password=validated_data['password'],
+        )
+
+        if role == 'reader':
+            Reader.objects.create(
+                user=user,
+                interests=self.context.data['interests'],
+                is_adult=self.context.data['is_adult']
+            )
+            user.is_reader = True
+        elif role == 'blogger':
+            Blogger.objects.create(
+                user=user,
+                birthday=self.context.data['birthday'],
+                country=self.context.data['country'],
+                categories=self.context.data['categories']
+            )
+            user.is_blogger = True
+
+        user.save()
+
         return user
 
     def to_representation(self, instance):

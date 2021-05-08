@@ -1,6 +1,7 @@
 // Boards
 export const BOARDS_LOADING = 'BOARDS_LOADING'
 export const BOARDS_LOADED = 'BOARDS_LOADED'
+export const CREATE_BOARD = 'CREATE_BOARD'
 
 // Topics
 export const TOPICS_LOADING = 'TOPICS_LOADING'

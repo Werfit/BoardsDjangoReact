@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { loadBoards } from 'actions/boards'
@@ -8,6 +9,7 @@ import Loader from '../common/Loader'
 
 const Boards = () => {
     const { list: boards, isLoading } = useSelector(state => state.boards)
+    const { user, isLoading: userIsLoading } = useSelector(state => state.accounts)
     const dsp = useDispatch()
 
     useEffect(() => dsp(loadBoards()), [])
@@ -17,6 +19,7 @@ const Boards = () => {
             <ol className="breadcrumb my-4">
                 <li className="breadcrumb-item active">Home</li>
             </ol>
+            { (user && !userIsLoading && user.is_blogger) && <Link className="mb-4 btn btn-primary" to="/boards/new/">New board</Link> }
             <table className="table">
                 <thead className="table-dark">
                     <tr>
