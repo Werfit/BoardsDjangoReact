@@ -1,6 +1,7 @@
+import multiselectfield
 from django.contrib.auth import authenticate
-from rest_framework import serializers
-from .models import User, Reader, Blogger
+from rest_framework import serializers, fields
+from .models import User, Reader, Blogger, CHOICES
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -36,10 +37,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         }
 
     def create(self, validated_data):
-        role = self.context.data.get('role')
-
-        if role != 'reader' and role != 'blogger':
-            raise serializers.ValidationError({'detail': 'Unknown role'})
+        is_blogger = self.context.data.get('is_blogger', False)
+        is_reader = self.context.data.get('is_reader', False)
 
         user = User.objects.create_user(
             username=validated_data['username'],
@@ -47,19 +46,20 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             password=validated_data['password'],
         )
 
-        if role == 'reader':
+        if is_reader:
             Reader.objects.create(
                 user=user,
-                interests=self.context.data['interests'],
-                is_adult=self.context.data['is_adult']
+                interests=self.context.data.get('interests'),
+                is_adult=self.context.data.get('is_adult')
             )
             user.is_reader = True
-        elif role == 'blogger':
+
+        if is_blogger:
             Blogger.objects.create(
                 user=user,
-                birthday=self.context.data['birthday'],
-                country=self.context.data['country'],
-                categories=self.context.data['categories']
+                birthday=self.context.data.get('birthday'),
+                country=self.context.data.get('country'),
+                categories=self.context.data.get('categories')
             )
             user.is_blogger = True
 
@@ -72,12 +72,16 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class BloggerSerializer(serializers.ModelSerializer):
+    categories = fields.MultipleChoiceField(choices=CHOICES)
+
     class Meta:
         model = Blogger
         fields = ('birthday', 'country', 'categories')
 
 
 class ReaderSerializer(serializers.ModelSerializer):
+    interests = fields.MultipleChoiceField(choices=CHOICES)
+
     class Meta:
         model = Reader
         fields = ('is_adult', 'interests')
@@ -102,6 +106,22 @@ class RetrieveUserSerializer(serializers.ModelSerializer):
         _instance.update(extra_data)
         return _instance
 
+    def update(self, instance, validated_data):
+        instance = super().update(instance, validated_data)
+
+        if instance.is_blogger:
+            blogger = BloggerSerializer(instance.blogger, data=self.context['request'].data, partial=True)
+            blogger.is_valid(raise_exception=True)
+
+            instance.blogger = blogger.save()
+
+        if instance.is_reader:
+            reader = ReaderSerializer(instance.reader, data=self.context['request'].data, partial=True)
+            reader.is_valid(raise_exception=True)
+            instance.reader = reader.save()
+
+        instance.save()
+        return instance
 
 class ChangeUserPasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)

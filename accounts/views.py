@@ -57,7 +57,7 @@ def logout_user(request):
     })
 
 
-# Gets & Updates User profile data: first name, last name and email
+# Gets & Updates User profile data: first name, last name, email etc.
 @api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def retrieve_user(request):
@@ -65,7 +65,7 @@ def retrieve_user(request):
         user = serializers.RetrieveUserSerializer(request.user)
         return Response(user.data)
 
-    user = serializers.RetrieveUserSerializer(request.user, data=request.data, partial=True)
+    user = serializers.RetrieveUserSerializer(request.user, data=request.data, partial=True, context={'request': request})
     user.is_valid(raise_exception=True)
     user.save()
 

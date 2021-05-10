@@ -12,6 +12,8 @@ const Register = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [password2, setPassword2] = useState('')
+    const [isBlogger, setIsBlogger] = useState(false)
+    const [isReader, setIsReader] = useState(false)
 
     const dsp = useDispatch()
 
@@ -19,7 +21,7 @@ const Register = () => {
         e.preventDefault()
 
         if (password === password2) {
-            dsp(registerUser({ username, password }))
+            dsp(registerUser({username, password, is_blogger: isBlogger, is_reader: isReader}))
         }
     }
 
@@ -62,6 +64,25 @@ const Register = () => {
                                         value={password2} onChange={e => setPassword2(e.target.value)}
                                         required
                                     />
+                                </div>
+
+                                <div className="mb-3">
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" id="blogger"
+                                            value={isBlogger} onChange={() => setIsBlogger(!isBlogger)}
+                                        />
+                                        <label className="form-check-label" for="blogger">
+                                            Blogger
+                                        </label>
+                                    </div>
+                                    <div className="form-check">
+                                        <input className="form-check-input" type="checkbox" id="reader"
+                                            value={isReader} onChange={() => setIsReader(!isReader)}
+                                        />
+                                        <label className="form-check-label" for="reader">
+                                            Reader
+                                        </label>
+                                    </div>
                                 </div>
                                 
                                 <button className="btn btn-primary btn-block">Sign up</button>
