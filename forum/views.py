@@ -3,17 +3,17 @@ from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, exceptions
-from rest_framework.decorators import action
 
 from .models import Board, Topic, Post
 from .serializers import BoardSerializer, TopicSerializer, PostSerializer
 from .pagination import LargeResultsSetPagination, SmallResultsSetPagination
+from .permissions import BloggerPermission
 
 
 class BoardsViewSet(viewsets.ModelViewSet):
     queryset = Board.objects.all()
     serializer_class = BoardSerializer
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly, BloggerPermission)
 
 
 class TopicsViewSet(viewsets.ModelViewSet):

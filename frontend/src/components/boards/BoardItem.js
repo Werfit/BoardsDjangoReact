@@ -1,9 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 
 import moment from 'moment'
 
-const BoardItem = ({ board }) => {
+import { removeBoard } from 'actions/boards'
+
+const BoardItem = ({ board, bloggersDetails=false }) => {
+    const dsp = useDispatch()
+
+    const deleteBoard = () => dsp(removeBoard(board.id))
+
     return (
         <tr>
             <td>
@@ -17,7 +24,7 @@ const BoardItem = ({ board }) => {
             <td className="align-middle">
                 { board.topics }
             </td>
-            <td>
+            <td className="align-middle">
                 {
                     board.last_post ? (
                         <small>
@@ -32,6 +39,14 @@ const BoardItem = ({ board }) => {
                     )
                 }
             </td>
+            {
+                bloggersDetails && (
+                    <td className="align-middle">
+                        <div className="btn btn-danger btn-lg me-2" onClick={deleteBoard}>D</div>
+                        <Link className="btn btn-primary btn-lg ms-2" to={`/boards/${board.id}/`}>U</Link>
+                    </td>
+                )
+            }
         </tr>
     )
 }

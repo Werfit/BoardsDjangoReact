@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import smart_str, smart_bytes, DjangoUnicodeDecodeError
@@ -14,10 +14,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from . import serializers
+from .models import User, Reader, Blogger
 from .permissions import NotAuthenticated
-
-# TODO: Create permission only for not authenticated users
-# TODO: Implement the permission for login, register and reset
 
 
 @api_view(['POST'])
@@ -37,7 +35,7 @@ def login_user(request):
 @api_view(['POST'])
 @permission_classes([NotAuthenticated])
 def register_user(request):
-    user_serializer = serializers.RegisterUserSerializer(data=request.data)
+    user_serializer = serializers.RegisterUserSerializer(data=request.data, context=request)
     user_serializer.is_valid(raise_exception=True)
     user = user_serializer.save()
 
@@ -59,7 +57,7 @@ def logout_user(request):
     })
 
 
-# Gets & Updates User profile data: first name, last name and email
+# Gets & Updates User profile data: first name, last name, email etc.
 @api_view(['GET', 'PATCH'])
 @permission_classes([IsAuthenticated])
 def retrieve_user(request):
@@ -67,7 +65,7 @@ def retrieve_user(request):
         user = serializers.RetrieveUserSerializer(request.user)
         return Response(user.data)
 
-    user = serializers.RetrieveUserSerializer(request.user, data=request.data, partial=True)
+    user = serializers.RetrieveUserSerializer(request.user, data=request.data, partial=True, context={'request': request})
     user.is_valid(raise_exception=True)
     user.save()
 

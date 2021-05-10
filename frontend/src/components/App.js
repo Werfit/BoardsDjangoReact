@@ -15,6 +15,8 @@ import styles from 'styles/index.sass'
 const Boards = lazy(() => import('./pages/Boards'))
 const Topics = lazy(() => import('./pages/Topics'))
 const Posts = lazy(() => import('./pages/Posts'))
+const CreateBoard = lazy(() => import('./pages/CreateBoard'))
+const UpdateBoard = lazy(() => import('./pages/UpdateBoard'))
 const CreateTopic = lazy(() => import('./pages/CreateTopic'))
 const ReplyPost = lazy(() => import('./pages/ReplyPost'))
 const Login = lazy(() => import('./pages/accounts/Login'))
@@ -46,6 +48,8 @@ const App = () => {
                     <PublicBoardsRoute exact path='/' component={ Boards } />
                     <PublicBoardsRoute exact path='/boards/:board_id/topics/' component={ Topics } />
                     <PublicBoardsRoute exact path='/boards/:board_id/topics/:topic_id/posts/' component={ Posts } />
+                    <PrivateBoardsRoute path='/boards/new/' bloggerOnly={true} component={ CreateBoard } />
+                    <PrivateBoardsRoute exact path='/boards/:board_id/' bloggerOnly={true} component={ UpdateBoard } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/new/' component={ CreateTopic } />
                     <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/reply/' component={ ReplyPost }/>
                     <PrivateBoardsRoute path='/boards/:board_id/topics/:topic_id/posts/:post_id/edit/' component={ EditPost }/>

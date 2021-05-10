@@ -1,5 +1,5 @@
-from django.contrib.auth.models import User
 from django.db import models
+from boards.settings import AUTH_USER_MODEL as USER
 
 
 class Board(models.Model):
@@ -19,7 +19,7 @@ class Board(models.Model):
 class Topic(models.Model):
     subject = models.CharField(max_length=150)
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name='topics')
-    starter = models.ForeignKey(User, on_delete=models.CASCADE)
+    starter = models.ForeignKey(USER, on_delete=models.CASCADE)
 
     updated_at = models.DateTimeField(auto_now_add=True)
     views = models.PositiveIntegerField(default=0)
@@ -31,7 +31,7 @@ class Topic(models.Model):
 class Post(models.Model):
     message = models.TextField()
     topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='posts')
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(USER, on_delete=models.CASCADE)
 
     created_at = models.DateTimeField(auto_now_add=True)
 

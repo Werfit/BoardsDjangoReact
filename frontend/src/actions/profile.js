@@ -7,8 +7,7 @@ import {
     PASSWORD_CHANGE_FAILED,
     PROFILE_LOADED,
     PROFILE_LOADING,
-    PROFILE_PATCHED,
-    USER_FAILED
+    PROFILE_PATCHED
 } from './types'
 
 

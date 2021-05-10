@@ -1,6 +1,10 @@
 // Boards
 export const BOARDS_LOADING = 'BOARDS_LOADING'
 export const BOARDS_LOADED = 'BOARDS_LOADED'
+export const BOARD_REMOVED = 'BOARD_REMOVED'
+export const BOARD_LOADED = 'BOARD_LOADED'
+export const BOARD_LOADING = 'BOARD_LOADING'
+export const BOARD_CLEARED = 'BOARD_CLEARED'
 
 // Topics
 export const TOPICS_LOADING = 'TOPICS_LOADING'
